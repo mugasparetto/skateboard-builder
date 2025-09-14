@@ -1,103 +1,83 @@
-import Image from "next/image";
+import { createClient } from "@/prismicio";
+import { ButtonLink } from "./components/ButtonLink";
+import { Heading } from "./components/Heading";
 
-export default function Home() {
+import { BuilderControlsProvider } from "./context";
+import Preview from "./Preview";
+import { asImageSrc } from "@prismicio/client";
+import Controls from "./Controls";
+import Loading from "./Loading";
+
+interface SearchParams {
+  wheel?: string;
+  deck?: string;
+  truck?: string;
+  bolt?: string;
+}
+
+export default async function Home(props: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const searchParams = await props.searchParams;
+
+  const client = createClient();
+  const builderSettings = await client.getSingle("board_builder");
+  const { wheels, decks, metals } = builderSettings.data;
+
+  const defaultWheel =
+    wheels.find((wheel) => wheel.uid === searchParams.wheel) ?? wheels[0];
+  const defaultDeck =
+    decks.find((deck) => deck.uid === searchParams.deck) ?? decks[0];
+  const defaultTruck =
+    metals.find((metal) => metal.uid === searchParams.truck) ?? metals[0];
+  const defaultBolt =
+    metals.find((metal) => metal.uid === searchParams.bolt) ?? metals[0];
+
+  const wheelTextureURLs = wheels
+    .map((wheel) => asImageSrc(wheel.texture))
+    .filter((url): url is string => Boolean(url));
+
+  const deckTextureURLs = decks
+    .map((deck) => asImageSrc(deck.texture))
+    .filter((url): url is string => Boolean(url));
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+    <div className="flex min-h-screen flex-col lg:flex-row">
+      <BuilderControlsProvider
+        defaultWheel={defaultWheel}
+        defaultDeck={defaultDeck}
+        defaultTruck={defaultTruck}
+        defaultBolt={defaultBolt}
+      >
+        <div className="relative aspect-square shrink-0 bg-[#3a414a] lg:aspect-auto lg:grow">
+          <div className="absolute inset-0">
+            <Preview
+              wheelTextureURLs={wheelTextureURLs}
+              deckTextureURLs={deckTextureURLs}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+        <div className="grow bg-texture bg-zinc-900 text-white ~p-4/6 lg:w-96 lg:shrink-0 lg:grow-0">
+          <Heading as="h1" size="sm" className="mb-6 mt-0">
+            Build your board
+          </Heading>
+
+          <Controls
+            wheels={wheels}
+            decks={decks}
+            metals={metals}
+            className="mb-6"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+          <ButtonLink
+            href={`/demo?wheel=${searchParams.wheel}&deck=${searchParams.deck}&truck=${searchParams.truck}&bolt=${searchParams.bolt}`}
+            color="lime"
+          >
+            Take it for a spin
+          </ButtonLink>
+        </div>
+      </BuilderControlsProvider>
+      <Loading />
     </div>
   );
 }

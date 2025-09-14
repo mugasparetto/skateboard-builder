@@ -1,0 +1,40 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"heading": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading1",
+						"content": {
+							"text": "Human"
+						}
+					}
+				]
+			},
+			"body": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Laborum cupidatat et dolore incididunt velit anim tempor mollit culpa nisi ut sunt culpa excepteur. Do dolore id excepteur est dolore mollit commodo deserunt eu laboris anim et ea sint."
+						}
+					}
+				]
+			},
+			"button": {
+				"key": "8a88f80e-7590-4dae-ba8d-b1e3b8f33fbb",
+				"__TYPE__": "LinkContent",
+				"value": {
+					"__TYPE__": "ExternalLink",
+					"url": "https://slicemachine.dev",
+					"text": "enjoy"
+				}
+			}
+		},
+		"items": []
+	}
+]
