@@ -6,6 +6,7 @@ export type ButtonProps = PrismicNextLinkProps & {
   color?: "orange" | "purple" | "lime";
   size?: "sm" | "md" | "lg";
   icon?: "cart" | "skateboard" | "plus";
+  prefetch?: boolean;
 };
 
 export function ButtonLink({
